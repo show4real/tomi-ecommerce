@@ -1,0 +1,293 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Admin Dashboard | HayzeeOnline</title>
+    <meta name="description" content="Admin dashboard for products and orders">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/animate.min.css">
+    <link rel="stylesheet" href="assets/css/magnific-popup.css">
+    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/css/flaticon.css">
+    <link rel="stylesheet" href="assets/css/odometer.css">
+    <link rel="stylesheet" href="assets/css/slick.css">
+    <link rel="stylesheet" href="assets/css/default.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+
+    <!-- Admin UI polish (kept small and isolated) -->
+    <link rel="stylesheet" href="assets/css/admin.css">
+
+    <!-- Optional: override API base url at runtime -->
+    <script>
+        // HEALTH_SUPPLEMENTS_API_BASE_URL = 'https://apiv2.hayzeeonline.com';
+    </script>
+</head>
+
+<body>
+    <!-- main-area -->
+    <main>
+        <section class="breadcrumb-area breadcrumb-bg" data-background="assets/img/bg/breadcrumb_bg.jpg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="breadcrumb-content">
+                            <h2 class="title">Admin Dashboard</h2>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Admin</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-pt-90 section-pb-90">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-lg-3">
+                        <aside class="tadmin-card tadmin-sticky">
+                            <div class="tadmin-card__header">
+                                <div>
+                                    <p class="tadmin-muted mb-1">Workspace</p>
+                                    <h4 class="tadmin-card__title mb-0">Health Supplements</h4>
+                                </div>
+                                <span class="tadmin-badge" id="api-status">API</span>
+                            </div>
+
+                            <div class="tadmin-card__body">
+                                <div class="tadmin-nav" role="tablist" aria-label="Admin navigation">
+                                    <button class="tadmin-nav__item is-active" data-tab="products" type="button">
+                                        <i class="fas fa-box-open"></i>
+                                        <span>Products</span>
+                                    </button>
+                                    <button class="tadmin-nav__item" data-tab="orders" type="button">
+                                        <i class="fas fa-receipt"></i>
+                                        <span>Orders</span>
+                                    </button>
+                                </div>
+
+                                <hr class="tadmin-hr">
+
+                                <div class="tadmin-meta">
+                                    <div class="tadmin-meta__row">
+                                        <span class="tadmin-muted">Products loaded</span>
+                                        <strong id="meta-products">0</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+
+                    <div class="col-lg-9">
+                        <div class="tadmin-tabs">
+                            <!-- Products -->
+                            <section class="tadmin-tab is-active" id="tab-products" aria-label="Products">
+                                <div class="tadmin-header">
+                                    <div>
+                                        <h3 class="tadmin-h3">Products</h3>
+                                        <p class="tadmin-muted mb-0">Create, update, and review your catalog.</p>
+                                    </div>
+
+                                    <div class="tadmin-actions">
+                                        <div class="tadmin-input-group">
+                                            <i class="fas fa-search"></i>
+                                            <input class="tadmin-input" id="product-search" type="search" placeholder="Search products..." autocomplete="off">
+                                        </div>
+                                        <button class="btn btn-sm btn-three" id="refresh-products" type="button">Refresh</button>
+                                    </div>
+                                </div>
+
+                                <div class="row g-4">
+                                    <div class="col-lg-5">
+                                        <div class="tadmin-card">
+                                            <div class="tadmin-card__header">
+                                                <h4 class="tadmin-card__title mb-0" id="product-form-title">Create product</h4>
+                                                <button class="tadmin-link" id="clear-form" type="button">Clear</button>
+                                            </div>
+                                            <div class="tadmin-card__body">
+                                                <form id="product-form" class="tadmin-form" novalidate>
+                                                    <input type="hidden" id="product-id" value="">
+
+                                                    <label class="tadmin-label" for="product-name">Name</label>
+                                                    <input class="tadmin-input" id="product-name" type="text" required placeholder="Vitamin D3 5000IU">
+
+                                                    <label class="tadmin-label" for="product-description">Description</label>
+                                                    <textarea class="tadmin-textarea" id="product-description" rows="4" required placeholder="Bone + immune support (90 softgels)"></textarea>
+
+                                                    <div class="row g-3">
+                                                        <div class="col-sm-6">
+                                                            <label class="tadmin-label" for="product-price">Price</label>
+                                                            <input class="tadmin-input" id="product-price" type="number" required min="0" step="1" placeholder="9800">
+                                                            <small class="tadmin-help">API expects an integer (e.g. 9800).</small>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <label class="tadmin-label" for="product-availability">Availability</label>
+                                                            <select class="tadmin-input" id="product-availability" required>
+                                                                <option value="1" selected>Available</option>
+                                                                <option value="0">Unavailable</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <label class="tadmin-label" for="product-image">Image (optional)</label>
+                                                    <input class="tadmin-input" id="product-image" type="file" accept="image/*">
+
+                                                    <div class="tadmin-form__actions">
+                                                        <button class="btn btn-sm" id="submit-product" type="submit">Save</button>
+                                                        <button class="btn btn-sm btn-two" id="delete-product" type="button" disabled>Delete (UI only)</button>
+                                                    </div>
+
+                                                    <p class="tadmin-status" id="product-status" role="status" aria-live="polite"></p>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-7">
+                                        <div class="tadmin-card">
+                                            <div class="tadmin-card__header">
+                                                <h4 class="tadmin-card__title mb-0">Catalog</h4>
+                                                <span class="tadmin-muted" id="products-hint">Click a product to edit</span>
+                                            </div>
+                                            <div class="tadmin-card__body">
+                                                <div class="tadmin-table-wrap">
+                                                    <table class="tadmin-table" aria-label="Products table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width: 52px;">Img</th>
+                                                                <th>Name</th>
+                                                                <th style="width: 120px;">Price</th>
+                                                                <th style="width: 110px;">Avail.</th>
+                                                                <th style="width: 80px;">Edit</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="products-tbody">
+                                                            <tr>
+                                                                <td colspan="5" class="tadmin-muted">Loading…</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Orders -->
+                            <section class="tadmin-tab" id="tab-orders" aria-label="Orders">
+                                <div class="tadmin-header">
+                                    <div>
+                                        <h3 class="tadmin-h3">Orders</h3>
+                                        <p class="tadmin-muted mb-0">Review customer orders created during checkout.</p>
+                                    </div>
+                                </div>
+
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <div class="tadmin-card">
+                                            <div class="tadmin-card__header">
+                                                <h4 class="tadmin-card__title mb-0">Orders</h4>
+                                                <div class="tadmin-actions">
+                                                    <button class="btn btn-sm btn-three" id="refresh-orders" type="button">Refresh</button>
+                                                </div>
+                                            </div>
+                                            <div class="tadmin-card__body">
+                                                <div class="tadmin-table-wrap">
+                                                    <table class="tadmin-table" aria-label="Orders table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width: 90px;">Order ID</th>
+                                                                <th>Customer</th>
+                                                                <th style="width: 110px;">Items</th>
+                                                                <th style="width: 170px;">Created</th>
+                                                                <th style="width: 70px;">View</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="orders-tbody">
+                                                            <tr>
+                                                                <td colspan="5" class="tadmin-muted">No orders yet.</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <p class="tadmin-status" id="orders-status" role="status" aria-live="polite"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="tadmin-card">
+                                            <div class="tadmin-card__header">
+                                                <h4 class="tadmin-card__title mb-0">Order details</h4>
+                                                <span class="tadmin-muted">Stored from checkout</span>
+                                            </div>
+                                            <div class="tadmin-card__body">
+                                                <div id="order-detail" class="tadmin-order" aria-live="polite">
+                                                    <div class="tadmin-order__empty tadmin-muted">Select an order to view details.</div>
+                                                </div>
+
+                                                <!-- <form id="order-fetch-form" class="tadmin-form" novalidate>
+                                                    <label class="tadmin-label mt-3" for="order-fetch-id">Fetch live by ID (optional)</label>
+                                                    <input class="tadmin-input" id="order-fetch-id" type="text" placeholder="1">
+                                                    <div class="tadmin-form__actions">
+                                                        <button class="btn btn-sm btn-three" type="submit">Fetch</button>
+                                                    </div>
+                                                    <p class="tadmin-status" id="order-fetch-status" role="status" aria-live="polite"></p>
+                                                </form> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- main-area-end -->
+
+    <!-- JS here -->
+    <script src="assets/js/vendor/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/imagesloaded.pkgd.min.js"></script>
+    <script src="assets/js/isotope.pkgd.min.js"></script>
+    <script src="assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="assets/js/jquery.odometer.min.js"></script>
+    <script src="assets/js/jquery.appear.js"></script>
+    <script src="assets/js/jquery.paroller.min.js"></script>
+    <script src="assets/js/jquery.easypiechart.min.js"></script>
+    <script src="assets/js/jquery.inview.min.js"></script>
+    <script src="assets/js/jquery.easing.js"></script>
+    <script src="assets/js/jquery-ui.min.js"></script>
+    <script src="assets/js/svg-inject.min.js"></script>
+    <script src="assets/js/jarallax.min.js"></script>
+    <script src="assets/js/slick.min.js"></script>
+    <script src="assets/js/validator.js"></script>
+    <script src="assets/js/ajax-form.js"></script>
+    <script src="assets/js/wow.min.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script src="assets/js/products-data.js"></script>
+    <script src="assets/js/admin-page.js"></script>
+
+    <script>
+        SVGInject(document.querySelectorAll("img.injectable"));
+    </script>
+</body>
+
+</html>
