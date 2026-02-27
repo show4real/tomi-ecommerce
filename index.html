@@ -50,29 +50,35 @@
     <!-- Scroll-top-end-->
 
     <!-- header-area -->
-    <header id="home" class="tdw">
-        <div id="header-top-fixed"></div>
-        <div id="sticky-header" class="menu-area tdw-header">
-            <div class="container custom-container">
+    <header id="home">
+        <div id="header-fixed-height"></div>
+        <div id="sticky-header" class="tg-menu-area menu-area">
+            <div class="container">
                 <div class="row">
                     <div class="col-12">
                         <div class="mobile-nav-toggler"><i class="flaticon-layout"></i></div>
                         <div class="menu-wrap">
                             <nav class="menu-nav">
                                 <div class="logo">
-                                    <a href="index.html"><img src="assets/img/logo/logo.png" alt="Logo"></a>
+                                    <a href="index.html">
+                                        <img src="assets/img/logo/logo.png" alt="Logo">
+                                    </a>
+                                </div>
+                                <div class="mobile-cart-icon d-xl-none">
+                                    <a href="cart.html" class="cart-count" aria-label="View cart">
+                                        <i class="flaticon-shopping-cart"></i>
+                                        <span class="mini-cart-count">0</span>
+                                    </a>
                                 </div>
                                 <div class="navbar-wrap main-menu d-none d-xl-flex">
                                     <ul class="navigation">
                                         <li class="active"><a href="#home" class="section-link">Home</a></li>
-                                        <li><a href="shop.html" class="section-link">Shop</a></li>
                                         <li><a href="#about" class="section-link">About</a></li>
+                                        <li><a href="shop.html">Shop</a></li>
                                         <li><a href="contact.html">Contact</a></li>
                                     </ul>
                                 </div>
-
-                                <div class="header-action d-none d-sm-block tdw-header-action">
-
+                                <div class="header-action d-none d-sm-block">
                                     <ul>
                                         <li class="header-shop-cart">
                                             <a href="cart.html" class="cart-count" aria-label="View cart">
@@ -80,106 +86,64 @@
                                                 <span class="mini-cart-count">0</span>
                                             </a>
                                         </li>
-                                        <li><a href="shop.html" style="color: white;" class="btn tdw-btn">Shop</a></li>
+                                        <li><a href="shop.html" class="tg-btn">Shop Now</a></li>
                                     </ul>
                                 </div>
-
                             </nav>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Mobile Menu  -->
-        <div class="mobile-menu">
-            <nav class="menu-box">
-                <div class="close-btn"><i class="fas fa-times"></i></div>
-                <div class="nav-logo">
-                    <a href="index.html"><img src="assets/img/logo/logo.png" alt=""></a>
-                </div>
-                <div class="menu-outer">
-                    <!--Here Menu Will Come Automatically Via Javascript / Same Menu as in Header-->
-                </div>
-
-            </nav>
-        </div>
-        <div class="menu-backdrop"></div>
-        <!-- End Mobile Menu -->
-
-        <!-- header-search -->
-        <div class="search-popup-wrap" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="search-wrap text-center">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="search-form">
-                                <form action="#">
-                                    <input type="text" placeholder="Enter your keyword...">
-                                    <button class="search-btn"><i class="flaticon-search"></i></button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="search-backdrop"></div>
-        <!-- header-search-end -->
-
-        <!-- offCanvas-start -->
-        <div class="offCanvas-wrap">
-            <div class="offCanvas-toggle"><img src="assets/img/icons/close.png" alt="icon"></div>
-            <div class="offCanvas-body">
-                <div class="offCanvas-content">
-                    <h3 class="title">Getting all of the <span>Nutrients</span> you need simply cannot be done without
-                        supplements.</h3>
-                    <p>Nam libero tempore, cum soluta nobis eligendi cumque quod placeat facere possimus assumenda omnis
-                        dolor repellendu sautem temporibus officiis</p>
-                </div>
-                <div class="offcanvas-contact">
-                    <h4 class="number">+1 599 162 4545</h4>
-                    <h4 class="email">Denise Salyards@gmail.com</h4>
-                    <p>5689 Lotaso Terrace, Culver City, <br> CA, United States</p>
-                    <ul class="offcanvas-social list-wrap">
-                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="offCanvas-overlay"></div>
-        <!-- offCanvas-end -->
-
     </header>
     <!-- header-area-end -->
+
+    <!-- Mobile Menu  -->
+    <div class="mobile-menu">
+        <nav class="menu-box">
+            <div class="close-btn"><i class="fas fa-times"></i></div>
+            <div class="nav-logo">
+                <a href="index.html"><img src="assets/img/logo/logo.png" alt=""></a>
+            </div>
+            <div class="menu-outer">
+                <!--Here Menu Will Come Automatically Via Javascript / Same Menu as in Header-->
+            </div>
+            <div class="social-links">
+                <ul class="clearfix">
+                    <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                    <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                    <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                    <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="menu-backdrop"></div>
+    <!-- End Mobile Menu -->
 
 
     <!-- main-area -->
     <main class="main-area fix">
 
-        <!-- hero-area (TDW-style) -->
-        <section class="tdw-hero" aria-label="Hero">
+        <!-- hero-area -->
+        <section class="tg-banner-area banner-bg parallax-img">
             <div class="container">
-                <div class="row align-items-center justify-content-between">
-                    <div class="col-lg-6">
-                        <div class="tdw-hero-content">
-                            <h1 class="tdw-hero-title">Immunity. Booster. Supplements.</h1>
-                            <p class="tdw-eyebrow">Supplement guidance, simplified</p>
-
-                            <p class="tdw-hero-subtitle">Take the guesswork out of supplements with evidence-based education,
-                                smart stacks, and vetted products that support your goals—energy, digestion, sleep, immunity,
-                                and performance.</p>
-                            <div class="tdw-hero-cta">
-                                <a href="#about" class="btn tdw-btn tdw-btn-primary">About Us</a>
-                                <a href="shop.html" class="btn tdw-btn tdw-btn-ghost">Explore the Shop</a>
-                            </div>
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-xl-6 col-lg-6 order-0 order-lg-2">
+                        <div class="tg-banner-img text-center wow fadeInRight" data-wow-delay=".6s">
+                            <img src="assets/img/banner/supplement-2.png" alt="Wellness lifestyle" loading="eager">
                         </div>
                     </div>
-                    <div class="col-lg-5">
-                        <div class="tdw-hero-media">
-                            <img src="assets/img/banner/supplement-2.png" alt="Wellness lifestyle" loading="eager">
+                    <div class="col-xl-6 col-lg-6 col-md-10">
+                        <div class="tg-banner-content">
+                            <h4 class="sub-title wow fadeInUp" data-wow-delay=".2s">Supplement guidance, simplified</h4>
+                            <h2 class="title wow fadeInUp" data-wow-delay=".4s">Immunity. Booster. <br> Supplements.</h2>
+                            <p class="wow fadeInUp" data-wow-delay=".6s">Take the guesswork out of supplements with evidence-based education, smart stacks, and vetted products that support your goals—energy, digestion, sleep, immunity, and performance.</p>
+                            <div class="tg-banner-btn wow fadeInUp" data-wow-delay=".8s">
+                                <a href="#about" class="tg-btn">About Us</a>
+                                <a href="shop.html" class="tg-btn tg-btn-ghost">Explore the Shop</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -548,17 +512,13 @@
                                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                                 data-bs-target="#collapseOne" aria-expanded="true"
                                                 aria-controls="collapseOne">
-                                                <span class="count">01.</span> Denise Salyards ingredients provides a
-                                                searchable
-                                                ?
+                                                <span class="count">01.</span> What are the best supplements for boosting energy and manpower?
                                             </button>
                                         </h2>
                                         <div id="collapseOne" class="accordion-collapse collapse show"
                                             aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                             <div class="accordion-body">
-                                                There are many variations of passages of lorem ipsum that available but
-                                                the majority have alteration in some form by injected humour. There are
-                                                many variations of passages.
+                                                Our top picks for energy and manpower include Ashwagandha, Creatine Monohydrate, and Vitamin B12. These are clinically backed to support stamina, reduce fatigue, and enhance physical performance — making them ideal for active men and women looking to maximize their output daily.
                                             </div>
                                         </div>
                                     </div>
@@ -567,15 +527,13 @@
                                             <button class="accordion-button collapsed" type="button"
                                                 data-bs-toggle="collapse" data-bs-target="#collapseTwo"
                                                 aria-expanded="false" aria-controls="collapseTwo">
-                                                <span class="count">02.</span> How to edit Denise Salyards themes ?
+                                                <span class="count">02.</span> How do immunity boosters work and when should I take them?
                                             </button>
                                         </h2>
                                         <div id="collapseTwo" class="accordion-collapse collapse"
                                             aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                                             <div class="accordion-body">
-                                                There are many variations of passages of lorem ipsum that available but
-                                                the majority have alteration in some form by injected humour. There are
-                                                many variations of passages.
+                                                Immunity boosters like Vitamin C, Zinc, and Elderberry extract work by strengthening your body's natural defence mechanisms. For best results, take them consistently in the morning with food. During periods of high stress or seasonal changes, pairing them with Vitamin D3 provides added protection.
                                             </div>
                                         </div>
                                     </div>
@@ -584,16 +542,13 @@
                                             <button class="accordion-button collapsed" type="button"
                                                 data-bs-toggle="collapse" data-bs-target="#collapseThree"
                                                 aria-expanded="false" aria-controls="collapseThree">
-                                                <span class="count">03.</span> Denise Salyards app is a powerful
-                                                application ?
+                                                <span class="count">03.</span> Can I stack multiple supplements together safely?
                                             </button>
                                         </h2>
                                         <div id="collapseThree" class="accordion-collapse collapse"
                                             aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                                             <div class="accordion-body">
-                                                There are many variations of passages of lorem ipsum that available but
-                                                the majority have alteration in some form by injected humour. There are
-                                                many variations of passages.
+                                                Yes — smart stacking is safe when done correctly. Common effective stacks include Whey Protein + Creatine for muscle growth, or Magnesium + Zinc + Vitamin D for hormonal balance and recovery. We recommend starting with one stack at a time and monitoring how your body responds before adding more.
                                             </div>
                                         </div>
                                     </div>
@@ -602,16 +557,13 @@
                                             <button class="accordion-button collapsed" type="button"
                                                 data-bs-toggle="collapse" data-bs-target="#collapseFour"
                                                 aria-expanded="false" aria-controls="collapseFour">
-                                                <span class="count">04.</span> Latest version thorough Denise Salyards
-                                                powerful ?
+                                                <span class="count">04.</span> Are your supplements suitable for both men and women?
                                             </button>
                                         </h2>
                                         <div id="collapseFour" class="accordion-collapse collapse"
                                             aria-labelledby="headingFour" data-bs-parent="#accordionExample">
                                             <div class="accordion-body">
-                                                There are many variations of passages of lorem ipsum that available but
-                                                the majority have alteration in some form by injected humour. There are
-                                                many variations of passages.
+                                                Absolutely. While some products are formulated specifically for male performance or female hormonal support, the majority of our supplement range — including our immunity, energy, and digestive health lines — are designed for all adults. Each product page clearly indicates the recommended profile and dosage.
                                             </div>
                                         </div>
                                     </div>
@@ -620,15 +572,13 @@
                                             <button class="accordion-button collapsed" type="button"
                                                 data-bs-toggle="collapse" data-bs-target="#collapseFive"
                                                 aria-expanded="false" aria-controls="collapseFive">
-                                                <span class="count">05.</span> How to Track My Order ?
+                                                <span class="count">05.</span> How long does it take to see results from booster supplements?
                                             </button>
                                         </h2>
                                         <div id="collapseFive" class="accordion-collapse collapse"
                                             aria-labelledby="headingFive" data-bs-parent="#accordionExample">
                                             <div class="accordion-body">
-                                                There are many variations of passages of lorem ipsum that available but
-                                                the majority have alteration in some form by injected humour. There are
-                                                many variations of passages.
+                                                Results vary by supplement type and individual goals. Pre-workout boosters and caffeine-based energy blends can be felt within 30–60 minutes. Adaptogens like Ashwagandha typically show noticeable benefits after 2–4 weeks of consistent use. For long-term manpower and hormonal support, allow 6–8 weeks for optimal results.
                                             </div>
                                         </div>
                                     </div>

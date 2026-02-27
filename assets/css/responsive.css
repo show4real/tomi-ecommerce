@@ -414,6 +414,9 @@
 .menu-area .mobile-nav-toggler {
 	display: flex;
 }
+.mobile-cart-icon {
+	display: flex;
+}
 .sticky-menu.menu-area {
 	padding: 15px 0;
 }

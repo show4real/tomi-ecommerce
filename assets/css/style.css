@@ -1458,6 +1458,44 @@ label {
 	margin-top: -2px;
 }
 
+/* Mobile cart icon — shown only on mobile/tablet, hidden on desktop via d-xl-none */
+.mobile-cart-icon {
+	display: none;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	margin-left: auto;
+	margin-right: 12px;
+}
+.mobile-cart-icon a {
+	color: var(--tg-heading-font-color);
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 26px;
+	line-height: 1;
+}
+.mobile-cart-icon a:hover {
+	color: var(--tg-secondary-color);
+}
+.mobile-cart-icon .mini-cart-count {
+	position: absolute;
+	top: -8px;
+	right: -10px;
+	background: var(--tg-primary-color);
+	color: var(--tg-white);
+	font-size: 10px;
+	font-weight: 700;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+}
+
 
 /* 4. Search */
 .search-popup-wrap {
@@ -5342,9 +5380,8 @@ body.search-visible {
 
 /* 5. Banner */
 .tg-banner-area.banner-bg {
-	background-image: url(../img/banner/tg_banner_bg.jpg);
-	background-position: bottom center;
-	background-size: cover;
+	background-image: none;
+	background-color: var(--tg-white);
 	padding: 140px 0 230px;
 	position: relative;
 	overflow: hidden;
