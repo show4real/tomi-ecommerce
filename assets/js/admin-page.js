@@ -15,7 +15,7 @@
 
 (() => {
   const ORDER_HISTORY_KEY = 'tomi_orders_v1';
-  const DEFAULT_BASE_URL = 'https://apiv2.hayzeeonline.com';
+  const DEFAULT_BASE_URL = 'https://api.dsnutritional.com';
 
   const $ = (sel) => document.querySelector(sel);
 

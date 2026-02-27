@@ -9,7 +9,7 @@
 */
 
 (() => {
-	const DEFAULT_CHECKOUT_ENDPOINT = 'https://apiv2.hayzeeonline.com/api/health-supplements/orders';
+	const DEFAULT_CHECKOUT_ENDPOINT = 'https://api.dsnutritional.com/api/health-supplements/orders';
 	const ORDER_HISTORY_KEY = 'tomi_orders_v1';
 
 	const safeJsonParse = (value, fallback) => {

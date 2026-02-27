@@ -10,7 +10,7 @@
 */
 
 (() => {
-  const DEFAULT_BASE_URL = 'https://apiv2.hayzeeonline.com';
+  const DEFAULT_BASE_URL = 'https://api.dsnutritional.com';
   const DEFAULT_ROWS = 20;
 
   const getBaseUrl = () => {
