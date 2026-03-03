@@ -107,7 +107,7 @@
 		const items = Array.isArray(data.items) ? data.items.map(normalizeItem).filter(Boolean) : [];
 		return {
 			version: VERSION,
-			currency: String(data.currency || 'USD'),
+			currency: 'USD',
 			items,
 		};
 	};
