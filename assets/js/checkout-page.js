@@ -1,21 +1,27 @@
 /*
 	Checkout page logic — Stripe Payment Gateway
 	============================================================
-	API flow:
-	  1. POST  base_url/api/health-supplements/create-payment-intent
-	           → { client_secret, id }
+	Supports two payment methods:
+	  A) Card  — existing Stripe PaymentIntent card flow
+	  B) Invoice — Stripe-hosted invoice emailed to the customer
+	             (bank transfer / any Stripe-supported method)
+
+	API flow (Card):
+	  1. POST  base_url/api/health-supplements/create-payment-intent  → { client_secret, id }
 	  2. stripe.confirmCardPayment(client_secret, { payment_method: { card } })
-	           → Stripe confirms card on the client side
-	  3. POST  base_url/api/health-supplements/orders
-	           with full order payload including:
-	           payment: { provider: "stripe", reference: "<pi_id>", status: "succeeded" }
-	           Backend re-verifies the PaymentIntent before saving.
+	  3. POST  base_url/api/health-supplements/orders  (payment.provider = "stripe")
+
+	API flow (Invoice):
+	  1. POST  base_url/api/health-supplements/create-invoice
+	           body: { customer, items, currency }
+	           → { invoice_id, invoice_url, hosted_invoice_url, status }
+	           Backend creates a Stripe Customer + Invoice + InvoiceItems and sends it.
+	  2. POST  base_url/api/health-supplements/orders
+	           payment: { provider: "stripe_invoice", reference: invoice_id, status: "pending" }
 
 	Configure:
-	  - Set window.STRIPE_PUBLISHABLE_KEY before this script, OR
-	    add <meta name="stripe-key" content="pk_live_...">
-	  - Set window.CHECKOUT_API_BASE before this script, OR
-	    add <meta name="checkout-api-base" content="https://api.dsnutritional.com">
+	  - Set window.STRIPE_PUBLISHABLE_KEY  OR  <meta name="stripe-key"  content="pk_live_...">
+	  - Set window.CHECKOUT_API_BASE       OR  <meta name="checkout-api-base" content="...">
 */
 
 (() => {
@@ -89,12 +95,53 @@
 	}
 
 	// ─── DOM refs ─────────────────────────────────────────────────────────────────
-	const summaryEl   = document.getElementById('checkout-summary');
-	const statusEl    = document.getElementById('checkout-status');
-	const btn         = document.getElementById('place-order-btn');
-	const form        = document.getElementById('checkout-form');
-	const cardWrap    = document.getElementById('stripe-card-element');
-	const cardErrEl   = document.getElementById('stripe-card-errors');
+	const summaryEl        = document.getElementById('checkout-summary');
+	const statusEl         = document.getElementById('checkout-status');
+	const btn              = document.getElementById('place-order-btn');
+	const form             = document.getElementById('checkout-form');
+	const cardWrap         = document.getElementById('stripe-card-element');
+	const cardErrEl        = document.getElementById('stripe-card-errors');
+
+	// Tab / invoice refs
+	const tabCard          = document.getElementById('tab-card');
+	const tabInvoice       = document.getElementById('tab-invoice');
+	const panelCard        = document.getElementById('panel-card');
+	const panelInvoice     = document.getElementById('panel-invoice');
+	const invoiceSuccessEl = document.getElementById('invoice-success-box');
+	const invoiceRefEl     = document.getElementById('invoice-ref-display');
+
+	// ─── Active payment method ────────────────────────────────────────────────────
+	// 'card' | 'invoice'
+	let activeMethod = 'card';
+
+	const switchTab = (method) => {
+		activeMethod = method;
+
+		// Toggle tab button styles
+		[tabCard, tabInvoice].forEach((t) => {
+			if (!t) return;
+			const isActive = t.id === `tab-${method}`;
+			t.classList.toggle('active', isActive);
+			t.setAttribute('aria-selected', String(isActive));
+		});
+
+		// Toggle panels
+		[panelCard, panelInvoice].forEach((p) => {
+			if (!p) return;
+			p.classList.toggle('active', p.id === `panel-${method}`);
+		});
+
+		// Update button label
+		if (btn) {
+			btn.textContent = method === 'invoice' ? 'Send Invoice' : 'Place order';
+		}
+
+		// Clear any stale status
+		setStatus('', 'info');
+	};
+
+	if (tabCard)    tabCard.addEventListener('click',    () => switchTab('card'));
+	if (tabInvoice) tabInvoice.addEventListener('click', () => switchTab('invoice'));
 
 	// ─── Helpers ──────────────────────────────────────────────────────────────────
 	const formatPrice = (value) => {
@@ -221,7 +268,7 @@
 		}
 	};
 
-	// ─── Step 1 — Create PaymentIntent ────────────────────────────────────────────
+	// ─── Step 1 — Create PaymentIntent (card flow) ───────────────────────────────
 	const createPaymentIntent = async (items) => {
 		const url = `${getApiBase()}/api/health-supplements/create-payment-intent`;
 		const res = await fetch(url, {
@@ -296,8 +343,152 @@
 		return { payload, data };
 	};
 
+	// ─── Invoice flow — Create & send Stripe invoice ─────────────────────────────
+	const createStripeInvoice = async ({ customer, items, currency }) => {
+		const url = `${getApiBase()}/api/health-supplements/create-invoice`;
+		const res = await fetch(url, {
+			method:  'POST',
+			headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+			body:    JSON.stringify({ customer, items, currency }),
+		});
+		if (!res.ok) {
+			const text = await res.text().catch(() => '');
+			throw new Error(`Could not generate invoice (${res.status}). ${text}`);
+		}
+		const data = await res.json();
+		// Expected: { invoice_id, hosted_invoice_url, status, ... }
+		if (!data?.invoice_id) throw new Error('Invoice server returned an unexpected response.');
+		return data;
+	};
+
+	const handleSendInvoice = async () => {
+		if (form && !form.checkValidity()) {
+			form.reportValidity();
+			return;
+		}
+
+		const cart = window.CartStore.getCart();
+		if (!cart.items || cart.items.length === 0) {
+			setStatus('Your cart is empty.', 'error');
+			return;
+		}
+
+		const customer = getCustomer();
+		if (!customer.email) {
+			setStatus('Please enter your email address so we can send the invoice.', 'error');
+			document.getElementById('email')?.focus();
+			return;
+		}
+
+		const items    = buildOrderItems();
+		const currency = String(cart.currency || 'USD');
+
+		try {
+			setLoading(true);
+			setStatus('', 'info');
+
+			// ── Create invoice via backend ────────────────────────────────────────
+			setStatus('Generating your Stripe invoice…', 'info');
+			const invoiceData = await createStripeInvoice({ customer, items, currency });
+			console.log('[checkout] Invoice response:', invoiceData);
+
+			const invoiceId  = invoiceData.invoice_id;
+			const invoiceUrl = invoiceData.hosted_invoice_url || invoiceData.invoice_url || null;
+
+			// ── Record order with pending payment status ──────────────────────────
+			const url     = `${getApiBase()}/api/health-supplements/orders`;
+			const payload = {
+				currency,
+				customer,
+				items,
+				payment: {
+					provider:          'stripe_invoice',
+					reference:         invoiceId,
+					status:            'pending',
+					invoice_id:        invoiceId,
+					hosted_invoice_url: invoiceUrl,
+				},
+			};
+			console.log('[checkout] Submitting invoice order payload:', JSON.stringify(payload, null, 2));
+
+			const res = await fetch(url, {
+				method:  'POST',
+				headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+				body:    JSON.stringify(payload),
+			});
+
+			const orderData = await res.json().catch(() => null);
+			if (!res.ok) {
+				// Invoice was created — surface warning but don't block success
+				console.warn('[checkout] Order record returned non-OK', res.status, orderData);
+			}
+
+			addOrderToHistory({ requestPayload: payload, responseData: orderData });
+			window.CartStore.clear();
+			render();
+
+			// ── Show inline success state ─────────────────────────────────────────
+			setStatus('', 'info');
+			if (invoiceSuccessEl) {
+				invoiceSuccessEl.style.display = 'block';
+				// Scroll into view gently
+				invoiceSuccessEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+			}
+			if (invoiceRefEl) {
+				invoiceRefEl.textContent = `Invoice ref: ${invoiceId}`;
+			}
+
+			// If Stripe returned a hosted URL, offer an open link after a moment
+			if (invoiceUrl) {
+				const link = document.createElement('a');
+				link.href   = invoiceUrl;
+				link.target = '_blank';
+				link.rel    = 'noopener noreferrer';
+				link.style.cssText = 'display:block;margin-top:10px;font-size:13px;color:#1e40af;text-decoration:underline;';
+				link.textContent   = '→ View & pay invoice now';
+				if (invoiceSuccessEl) invoiceSuccessEl.appendChild(link);
+			}
+
+			// Disable the button to prevent re-submission
+			if (btn) {
+				btn.disabled    = true;
+				btn.textContent = 'Invoice sent ✓';
+			}
+
+			// ── Redirect to homepage after 10 seconds ─────────────────────────────
+			let countdown = 10;
+			const countdownEl = document.createElement('p');
+			countdownEl.style.cssText = 'margin-top:10px;font-size:13px;color:#166534;';
+			countdownEl.textContent   = `Redirecting to homepage in ${countdown}s…`;
+			if (invoiceSuccessEl) invoiceSuccessEl.appendChild(countdownEl);
+
+			const countdownTimer = setInterval(() => {
+				countdown -= 1;
+				if (countdown > 0) {
+					countdownEl.textContent = `Redirecting to homepage in ${countdown}s…`;
+				} else {
+					clearInterval(countdownTimer);
+					window.location.href = 'index.html';
+				}
+			}, 1000);
+
+		} catch (err) {
+			const msg = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+			setStatus(msg, 'error');
+			console.error('[checkout-page] Invoice flow error:', err);
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	// ─── Main checkout handler ────────────────────────────────────────────────────
 	const handlePlaceOrder = async () => {
+		// Route to the correct payment flow
+		if (activeMethod === 'invoice') {
+			return handleSendInvoice();
+		}
+
+		// ── Card flow (default) ──────────────────────────────────────────────────
 		// Validate billing form
 		if (form && !form.checkValidity()) {
 			form.reportValidity();
