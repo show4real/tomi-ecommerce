@@ -131,17 +131,19 @@
 			p.classList.toggle('active', p.id === `panel-${method}`);
 		});
 
-		// Update button label
+		// Update place-order button — re-enable in case it was disabled by a prior session
 		if (btn) {
+			btn.disabled    = false;
 			btn.textContent = method === 'invoice' ? 'Send Invoice' : 'Place order';
 		}
 
-		// Clear any stale status
+		// Clear any stale status / success boxes
 		setStatus('', 'info');
+		if (invoiceSuccessEl) invoiceSuccessEl.style.display = 'none';
 	};
 
-	if (tabCard)    tabCard.addEventListener('click',    () => switchTab('card'));
-	if (tabInvoice) tabInvoice.addEventListener('click', () => switchTab('invoice'));
+	if (tabCard)    tabCard.addEventListener('click',    (e) => { e.preventDefault(); e.stopPropagation(); switchTab('card'); });
+	if (tabInvoice) tabInvoice.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); switchTab('invoice'); });
 
 	// ─── Helpers ──────────────────────────────────────────────────────────────────
 	const formatPrice = (value) => {
